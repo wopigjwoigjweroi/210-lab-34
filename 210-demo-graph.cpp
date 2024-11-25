@@ -43,6 +43,24 @@ public:
             cout << endl;
         }
     }
+
+
+    void DFS(int s, vector<bool> &visited) {
+
+        cout << s << " "; 
+
+        visited[s] = true; 
+
+        for (auto &neighbor : adjList[s]) {
+
+            int n = neighbor.first; 
+
+            if (!visited[n]) {
+
+                DFS(n, visited); 
+            }
+        }
+    }
 };
 
 int main() {
