@@ -10,38 +10,26 @@ struct Edge {
     int src, dest, weight;
 
     bool operator<(const Edge &other) const {
-        
         return weight < other.weight;
-
     }
 };
 
-typedef pair<int, int> Pair;  // Creates alias 'Pair' for the pair<int,int> data type
+class DSU {
+private:
+    vector<int> parent, rank;
 
-class min {
-
-    private: 
-        vector<int> parent, rank; 
-
-    public: 
-
-        DSU(int i) {
-
-            parent.resize(i); 
-
-            rank.resize(i, 0); 
-
-            for (int t = 0; t = i; t++) {
-
-                parent[t] = t; 
-
-            }
-
+public:
+    DSU(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
         }
+    }
 
-        int find(int node) {
+    int find(int node) {
         if (parent[node] != node) {
-            parent[node] = find(parent[node]); // Path compression
+            parent[node] = find(parent[node]);
         }
         return parent[node];
     }
@@ -53,6 +41,7 @@ class min {
         if (rootU == rootV) {
             return false;
         }
+
         if (rank[rootU] > rank[rootV]) {
             parent[rootV] = rootU;
         } else if (rank[rootU] < rank[rootV]) {
@@ -66,78 +55,31 @@ class min {
     }
 };
 
-class Graph {
+class CityRoadNetwork {
+private:
+    vector<Edge> edges;
+    int numNodes;
+
 public:
-    // a vector of vectors of Pairs to represent an adjacency list
-    vector<vector<Pair>> adjList;
+    CityRoadNetwork(vector<Edge> const &inputEdges, int n) : edges(inputEdges), numNodes(n) {}
 
-    // Graph Constructor
-    Graph(vector<Edge> const &edges) {
-        // resize the vector to hold SIZE elements of type vector<Edge>
-        adjList.resize(SIZE);
+    void printMST() {
+        sort(edges.begin(), edges.end());
+        DSU dsu(numNodes);
+        vector<Edge> mst;
 
-        // add edges to the directed graph
-        for (auto &edge: edges) {
-            int src = edge.src;
-            int dest = edge.dest;
-            int weight = edge.weight;
-
-            // insert at the end
-            adjList[edge.src].push_back(make_pair(edge.dest, edge.weight));
-            // for an undirected graph, add an edge from dest to src also
-            adjList[edge.dest].push_back(make_pair(edge.src, edge.weight));
-        }
-    }
-
-    // Print the graph's adjacency list
-    void printGraph() {
-        cout << "City Road Network: " << endl << "================================\n";
-        for (int i = 0; i < adjList.size(); i++) {
-            cout << "Block: " << i << " connects to: \n";
-            for (Pair v : adjList[i])
-                cout << "-> Block " << v.first << "( Travel Time: " << v.second << " mins) \n";
-            cout << endl;
-        }
-    }
-
-    void shortestPath(int s) {
-
-        vector<int> dist(SIZE, INT_MAX); 
-
-        dist[s] = 0; 
-
-        priority_queue<Pair, vector<Pair>, greater<Pair>> pq; 
-
-        pq.push({0, s}); 
-
-        while (!pq.empty()) {
-
-            int distance = pq.top().first; 
-            int node = pq.top().second; 
-            pq.pop(); 
-
-            if (distance > dist[node]) continue; 
-
-            for (auto &neighbor : adjList[node]) {
-
-                int nextNode = neighbor.first; 
-                int weight = neighbor.second; 
-
-            if (dist[node] + weight < dist[nextNode]) {
-
-                dist[nextNode] = dist[node] + weight; 
-                pq.push({dist[nextNode], nextNode}); 
-            }
+        for (auto &edge : edges) {
+            if (dsu.unite(edge.src, edge.dest)) {
+                mst.push_back(edge);
+                if (mst.size() == numNodes - 1) break;
             }
         }
 
-        cout << "Shortest Path from block " << s << endl; 
-
-        for (int i = 0; i < SIZE; i++) {
-
-            cout << s << " -> " << i << " : " << dist[i] << endl; 
+        cout << "Minimum Spanning Tree edges:\n";
+        for (auto &edge : mst) {
+            cout << "Edge from " << edge.src << " to " << edge.dest
+                 << " with capacity: " << edge.weight << " units\n";
         }
-
     }
 };
 
@@ -148,13 +90,9 @@ int main() {
         {0,1,8},{0,2,21},{1,2,6},{1,3,5},{1,4,4},{2,7,11},{2,8,8},{3,4,9}, {5,6,10}, {5,7,15}, {5,8,5}, {6,7,3}, {6,8,7}, {7,8,8}, {7,9,5}, {9,10,7}, {9,11,3}, {10,12,4}, {11,12,6}
     };
 
-    // Creates graph
-    Graph graph(edges);
-
-    // Prints adjacency list representation of graph
-    graph.printGraph();
-
-    graph.shortestPath(0); 
+  CityRoadNetwork network(edges, 9);
+    
+  network.printMST();
 
     return 0;
 }
