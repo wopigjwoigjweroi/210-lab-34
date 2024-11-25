@@ -61,6 +61,38 @@ public:
             }
         }
     }
+
+    void BFS(int s) {
+
+        vector<bool> visited(SIZE, false); 
+
+        queue<int> q; 
+
+        visited[s] = true; 
+
+        q.push(s); 
+
+        while (!q.empty()) {
+
+            int n = q.front(); 
+
+            q.pop(); 
+
+            cout << n << " "; 
+
+            for (auto &neighbor : adjList[n]) {
+
+                int next = neighbor.first; 
+
+                if (!visited[n]) {
+
+                    visited[n] = true; 
+
+                    q.push(next); 
+                }
+            }
+        }
+    }
 };
 
 int main() {
