@@ -58,8 +58,23 @@ public:
 
         while (!pq.empty()) {
 
-            int dist = pq.top().first; 
+            int distance = pq.top().first; 
             int node = pq.top().second; 
+            pq.pop(); 
+
+            if (distance > dist[node]) continue; 
+
+            for (auto &neighbor : adjList[node]) {
+
+                int nextNode = neighbor.first; 
+                int weight = neighbor.second; 
+
+            if (dist[node] + weight < dist[nextNode]) {
+
+                dist[nextNode] = dist[node] + weight; 
+                pq.push({dist[nextNode], nextNode}); 
+            }
+            }
         }
 
     }
