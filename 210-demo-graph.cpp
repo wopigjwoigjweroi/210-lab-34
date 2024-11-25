@@ -29,19 +29,19 @@ public:
             int weight = edge.weight;
 
             // insert at the end
-            adjList[src].push_back(make_pair(dest, weight));
+            adjList[edge.src].push_back(make_pair(edge.dest, edge.weight));
             // for an undirected graph, add an edge from dest to src also
-            adjList[dest].push_back(make_pair(src, weight));
+            adjList[edge.dest].push_back(make_pair(edge.src, edge.weight));
         }
     }
 
     // Print the graph's adjacency list
     void printGraph() {
-        cout << "Graph's adjacency list:" << endl;
+        cout << "City Road Network: " << endl << "================================\n";
         for (int i = 0; i < adjList.size(); i++) {
-            cout << i << " --> ";
+            cout << "Block: " << i << " connects to: \n";
             for (Pair v : adjList[i])
-                cout << "(" << v.first << ", " << v.second << ") ";
+                cout << "-> Block " << v.first << "( Travel Time: " << v.second << " mins) \n";
             cout << endl;
         }
     }
