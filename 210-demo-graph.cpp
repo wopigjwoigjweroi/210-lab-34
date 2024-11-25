@@ -77,7 +77,15 @@ public:
             }
         }
 
+        cout << "Shortest Path from block " << s << endl; 
+
+        for (int i = 0; i < SIZE; i++) {
+
+            cout << s << " -> " << i << " : " << dist[i] << endl; 
+        }
+
     }
+
 
     // void DFS(int s, vector<bool> &visited) {
 
