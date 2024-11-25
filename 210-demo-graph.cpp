@@ -125,16 +125,16 @@ int main() {
     // Prints adjacency list representation of graph
     graph.printGraph();
 
-    cout << "DFS starting from vertex 0: \n"; 
-    vector<bool> visited(SIZE, false); 
-    graph.DFS(0, visited); 
+    // cout << "DFS starting from vertex 0: \n"; 
+    // vector<bool> visited(SIZE, false); 
+    graph.DFSTrace(0); 
 
-    cout << endl; 
+    // cout << endl; 
 
-    cout << "BFS starting from vertex 0: \n"; 
+    // cout << "BFS starting from vertex 0: \n"; 
     graph.BFS(0);
 
-    cout << endl; 
+    // cout << endl; 
 
     return 0;
 }
