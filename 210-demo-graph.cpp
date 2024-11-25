@@ -8,9 +8,40 @@ const int SIZE = 13;
 
 struct Edge {
     int src, dest, weight;
+
+    bool operator<(const Edge &other) const {
+        
+        return weight < other.weight;
+
+    }
 };
 
 typedef pair<int, int> Pair;  // Creates alias 'Pair' for the pair<int,int> data type
+
+class min {
+
+    private: 
+        vector<int> parent, rank; 
+
+    public: 
+
+        DSU(int i) {
+
+            parent.resize(i); 
+
+            rank.resize(i, 0); 
+
+            for (int t = 0; t = i; t++) {
+
+                parent[t] = t; 
+
+            }
+
+        }
+
+
+};
+
 
 class Graph {
 public:
