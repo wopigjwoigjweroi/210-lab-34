@@ -86,9 +86,9 @@ public:
 
                 int next = neighbor.first; 
 
-                if (!visited[n]) {
+                if (!visited[next]) {
 
-                    visited[n] = true; 
+                    visited[next] = true; 
 
                     q.push(next); 
                 }
