@@ -85,71 +85,6 @@ public:
         }
 
     }
-
-
-    // void DFS(int s, vector<bool> &visited) {
-
-    //     cout << "Inspecting Block: " << s << endl; 
-
-    //     visited[s] = true; 
-
-    //     for (auto &neighbor : adjList[s]) {
-
-    //         int n = neighbor.first; 
-
-    //         if (!visited[n]) {
-
-    //             cout << " -> Possible route to block " << neighbor.first << " - Travel time: " << neighbor.second << " mins\n"; 
-    //             DFS(n, visited); 
-    //         }
-    //     }
-    // }
-
-    // void DFSTrace(int s) {
-
-    //     vector<bool> visited(SIZE, false);
-
-    //     cout << "Network Trace (DFS) from Block " << s << ":\n";
-    //     cout << "Purpose: Exploring possible routes through the city\n=======================================\n";
-    //     DFS(s, visited);
-    // }
-
-    // void BFS(int s) {
-
-    //     vector<bool> visited(SIZE, false); 
-
-    //     queue<int> q; 
-
-    //     visited[s] = true; 
-
-    //     q.push(s); 
-
-    //     cout << "Layer-by-Layer Network Inspection (BFS) from Block " << s << ":\n";
-    //     cout << "Purpose: Analyzing access routes by distance from the central block\n" << "=================================================\n";
-
-    //     while (!q.empty()) {
-
-    //         int n = q.front(); 
-
-    //         q.pop(); 
-
-    //         cout << n << " "; 
-
-    //         for (auto &neighbor : adjList[n]) {
-
-    //             int next = neighbor.first; 
-
-    //             if (!visited[next]) {
-
-    //                 cout << " -> Next accessible block: Block " << neighbor.first << " - Travel Time: " << neighbor.second << " min\n";
-
-    //                 visited[next] = true; 
-
-    //                 q.push(next); 
-    //             }
-    //         }
-    //     }
-    // }
 };
 
 int main() {
@@ -165,16 +100,7 @@ int main() {
     // Prints adjacency list representation of graph
     graph.printGraph();
 
-    // cout << "DFS starting from vertex 0: \n"; 
-    // vector<bool> visited(SIZE, false); 
-    graph.DFSTrace(0); 
-
-    // cout << endl; 
-
-    // cout << "BFS starting from vertex 0: \n"; 
-    graph.BFS(0);
-
-    // cout << endl; 
+    graph.shortestPath(0); 
 
     return 0;
 }
