@@ -49,7 +49,7 @@ public:
 
     void DFS(int s, vector<bool> &visited) {
 
-        cout << s << " "; 
+        cout << "Inspecting Block: " << s << endl; 
 
         visited[s] = true; 
 
@@ -59,9 +59,19 @@ public:
 
             if (!visited[n]) {
 
+                cout << " -> Possible route to block " << neighbor.first << " - Travel time: " << neighbor.second << " mins\n"; 
                 DFS(n, visited); 
             }
         }
+    }
+
+    void DFSTrace(int s) {
+
+        vector<bool> visited(SIZE, false);
+
+        cout << "Network Trace (DFS) from Block " << s << ":\n";
+        cout << "Purpose: Exploring possible routes through the city\n=======================================\n";
+        DFS(s, visited);
     }
 
     void BFS(int s) {
