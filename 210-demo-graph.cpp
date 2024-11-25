@@ -46,70 +46,87 @@ public:
         }
     }
 
+    void shortestPath(int s) {
 
-    void DFS(int s, vector<bool> &visited) {
+        vector<int> dist(SIZE, INT_MAX); 
 
-        cout << "Inspecting Block: " << s << endl; 
+        dist[s] = 0; 
 
-        visited[s] = true; 
+        priority_queue<Pair, vector<Pair>, greater<Pair>> pq; 
 
-        for (auto &neighbor : adjList[s]) {
+        pq.push({0, s}); 
 
-            int n = neighbor.first; 
+        while (!pq.empty()) {
 
-            if (!visited[n]) {
-
-                cout << " -> Possible route to block " << neighbor.first << " - Travel time: " << neighbor.second << " mins\n"; 
-                DFS(n, visited); 
-            }
+            int dist = pq.top().first; 
+            int node = pq.top().second; 
         }
+
     }
 
-    void DFSTrace(int s) {
+    // void DFS(int s, vector<bool> &visited) {
 
-        vector<bool> visited(SIZE, false);
+    //     cout << "Inspecting Block: " << s << endl; 
 
-        cout << "Network Trace (DFS) from Block " << s << ":\n";
-        cout << "Purpose: Exploring possible routes through the city\n=======================================\n";
-        DFS(s, visited);
-    }
+    //     visited[s] = true; 
 
-    void BFS(int s) {
+    //     for (auto &neighbor : adjList[s]) {
 
-        vector<bool> visited(SIZE, false); 
+    //         int n = neighbor.first; 
 
-        queue<int> q; 
+    //         if (!visited[n]) {
 
-        visited[s] = true; 
+    //             cout << " -> Possible route to block " << neighbor.first << " - Travel time: " << neighbor.second << " mins\n"; 
+    //             DFS(n, visited); 
+    //         }
+    //     }
+    // }
 
-        q.push(s); 
+    // void DFSTrace(int s) {
 
-        cout << "Layer-by-Layer Network Inspection (BFS) from Block " << s << ":\n";
-        cout << "Purpose: Analyzing access routes by distance from the central block\n" << "=================================================\n";
+    //     vector<bool> visited(SIZE, false);
 
-        while (!q.empty()) {
+    //     cout << "Network Trace (DFS) from Block " << s << ":\n";
+    //     cout << "Purpose: Exploring possible routes through the city\n=======================================\n";
+    //     DFS(s, visited);
+    // }
 
-            int n = q.front(); 
+    // void BFS(int s) {
 
-            q.pop(); 
+    //     vector<bool> visited(SIZE, false); 
 
-            cout << n << " "; 
+    //     queue<int> q; 
 
-            for (auto &neighbor : adjList[n]) {
+    //     visited[s] = true; 
 
-                int next = neighbor.first; 
+    //     q.push(s); 
 
-                if (!visited[next]) {
+    //     cout << "Layer-by-Layer Network Inspection (BFS) from Block " << s << ":\n";
+    //     cout << "Purpose: Analyzing access routes by distance from the central block\n" << "=================================================\n";
 
-                    cout << " -> Next accessible block: Block " << neighbor.first << " - Travel Time: " << neighbor.second << " min\n";
+    //     while (!q.empty()) {
 
-                    visited[next] = true; 
+    //         int n = q.front(); 
 
-                    q.push(next); 
-                }
-            }
-        }
-    }
+    //         q.pop(); 
+
+    //         cout << n << " "; 
+
+    //         for (auto &neighbor : adjList[n]) {
+
+    //             int next = neighbor.first; 
+
+    //             if (!visited[next]) {
+
+    //                 cout << " -> Next accessible block: Block " << neighbor.first << " - Travel Time: " << neighbor.second << " min\n";
+
+    //                 visited[next] = true; 
+
+    //                 q.push(next); 
+    //             }
+    //         }
+    //     }
+    // }
 };
 
 int main() {
