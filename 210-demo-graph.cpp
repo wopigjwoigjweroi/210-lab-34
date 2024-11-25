@@ -84,6 +84,9 @@ public:
 
         q.push(s); 
 
+        cout << "Layer-by-Layer Network Inspection (BFS) from Block " << s << ":\n";
+        cout << "Purpose: Analyzing access routes by distance from the central block\n" << "=================================================\n";
+
         while (!q.empty()) {
 
             int n = q.front(); 
@@ -97,6 +100,8 @@ public:
                 int next = neighbor.first; 
 
                 if (!visited[next]) {
+
+                    cout << " -> Next accessible block: Block " << neighbor.first << " - Travel Time: " << neighbor.second << " min\n";
 
                     visited[next] = true; 
 
