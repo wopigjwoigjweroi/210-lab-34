@@ -1,4 +1,6 @@
 #include <iostream>
+#include <deque>
+#include <queue>
 #include <vector>
 using namespace std;
 
@@ -107,6 +109,17 @@ int main() {
 
     // Prints adjacency list representation of graph
     graph.printGraph();
+
+    cout << "DFS starting from vertex 0: \n"; 
+    vector<bool> visited(SIZE, false); 
+    graph.DFS(0, visited); 
+
+    cout << endl; 
+
+    cout << "BFS starting from vertex 0: \n"; 
+    graph.BFS(0);
+
+    cout << endl; 
 
     return 0;
 }
