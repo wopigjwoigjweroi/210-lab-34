@@ -1,97 +1,175 @@
-#include <iostream>
-#include <deque>
-#include <queue>
+// COMSC-210 | Lab-34 | Jeremiah Ortiz
+include <iostream>
 #include <vector>
+#include <queue>
+#include <functional>
 using namespace std;
-
-const int SIZE = 13;
 
 struct Edge {
     int src, dest, weight;
 
-    bool operator<(const Edge &other) const {
+    bool operator<(const Edge& other) const {
         return weight < other.weight;
     }
 };
 
-class DSU {
-private:
-    vector<int> parent, rank;
-
-public:
-    DSU(int n) {
-        parent.resize(n);
-        rank.resize(n, 0);
-        for (int i = 0; i < n; i++) {
-            parent[i] = i;
-        }
-    }
-
-    int find(int node) {
-        if (parent[node] != node) {
-            parent[node] = find(parent[node]);
-        }
-        return parent[node];
-    }
-
-    bool unite(int u, int v) {
-        int rootU = find(u);
-        int rootV = find(v);
-
-        if (rootU == rootV) {
-            return false;
-        }
-
-        if (rank[rootU] > rank[rootV]) {
-            parent[rootV] = rootU;
-        } else if (rank[rootU] < rank[rootV]) {
-            parent[rootU] = rootV;
-        } else {
-            parent[rootV] = rootU;
-            rank[rootU]++;
-        }
-
-        return true;
-    }
-};
+typedef pair<int, int> Pair;
 
 class CityRoadNetwork {
 private:
     vector<Edge> edges;
+    vector<vector<Pair>> adjList;
     int numNodes;
 
 public:
-    CityRoadNetwork(vector<Edge> const &inputEdges, int n) : edges(inputEdges), numNodes(n) {}
+    CityRoadNetwork(vector<Edge> const& inputEdges, int n) : edges(inputEdges), numNodes(n) {
+        adjList.resize(numNodes);
+        for (auto& edge : inputEdges) {
+            adjList[edge.src].push_back({ edge.dest, edge.weight });
+            adjList[edge.dest].push_back({ edge.src, edge.weight });
+        }
+    }
 
-    void printMST() {
-        sort(edges.begin(), edges.end());
-        DSU dsu(numNodes);
-        vector<Edge> mst;
+    void displayNetwork() {
+        cout << "City Road Network Topology:\n================================\n";
+        for (int i = 0; i < adjList.size(); i++) {
+            cout << "Block " << i << " connects to:\n";
+            for (auto& neighbor : adjList[i]) {
+                cout << "  → Block " << neighbor.first << " (Travel Time: " << neighbor.second << " min)\n";
+            }
+        }
+        cout << endl;
+    }
 
-        for (auto &edge : edges) {
-            if (dsu.unite(edge.src, edge.dest)) {
-                mst.push_back(edge);
-                if (mst.size() == numNodes - 1) break;
+    void inspectBFS(int start) {
+        if (start < 0 || start >= numNodes) {
+            cout << "Invalid starting block.\n";
+            return;
+        }
+
+        vector<bool> visited(numNodes, false);
+        queue<int> q;
+        q.push(start);
+        visited[start] = true;
+
+        cout << "Layer-by-Layer Inspection (BFS) from Block " << start << ":\n";
+        while (!q.empty()) {
+            int block = q.front();
+            q.pop();
+            cout << "Checking Block " << block << "\n";
+
+            for (auto& neighbor : adjList[block]) {
+                if (!visited[neighbor.first]) {
+                    cout << "  → Next accessible block: Block " << neighbor.first << " - Travel Time: " << neighbor.second << " min\n";
+                    visited[neighbor.first] = true;
+                    q.push(neighbor.first);
+                }
+            }
+        }
+        cout << endl;
+    }
+
+    void DFSUtil(int start, vector<bool>& visited) {
+        visited[start] = true;
+        cout << "Inspecting Block " << start << "\n";
+
+        for (auto& neighbor : adjList[start]) {
+            if (!visited[neighbor.first]) {
+                cout << "  → Possible route to Block " << neighbor.first << " - Travel Time: " << neighbor.second << " min\n";
+                DFSUtil(neighbor.first, visited);
+            }
+        }
+    }
+
+    void planInspectionDFS(int start) {
+        if (start < 0 || start >= numNodes) {
+            cout << "Invalid starting block.\n";
+            return;
+        }
+
+        vector<bool> visited(numNodes, false);
+        cout << "Network Trace (DFS) from Block " << start << ":\n";
+        DFSUtil(start, visited);
+        cout << endl;
+    }
+
+    void findShortestPaths(int start) {
+        if (start < 0 || start >= numNodes) {
+            cout << "Invalid starting block.\n";
+            return;
+        }
+
+        vector<int> dist(numNodes, INT_MAX);
+        dist[start] = 0;
+        priority_queue<Pair, vector<Pair>, greater<Pair>> pq;
+        pq.push({ 0, start });
+
+        while (!pq.empty()) {
+            int currentDist = pq.top().first;
+            int currentNode = pq.top().second;
+            pq.pop();
+
+            if (currentDist > dist[currentNode]) continue;
+
+            for (auto& neighbor : adjList[currentNode]) {
+                int nextNode = neighbor.first;
+                int weight = neighbor.second;
+
+                if (dist[currentNode] + weight < dist[nextNode]) {
+                    dist[nextNode] = dist[currentNode] + weight;
+                    pq.push({ dist[nextNode], nextNode });
+                }
             }
         }
 
-        cout << "Minimum Spanning Tree edges:\n";
-        for (auto &edge : mst) {
-            cout << "Edge from " << edge.src << " to " << edge.dest
-                 << " with capacity: " << edge.weight << " units\n";
+        cout << "Shortest path from block " << start << ":\n";
+        for (int i = 0; i < numNodes; i++) {
+            cout << start << " -> " << i << " : " << dist[i] << " min\n";
         }
+        cout << endl;
+    }
+
+    void printMST() {
+        sort(edges.begin(), edges.end());
+        vector<int> parent(numNodes);
+        for (int i = 0; i < numNodes; i++) parent[i] = i;
+
+        function<int(int)> find = [&](int node) {
+            if (parent[node] != node) {
+                parent[node] = find(parent[node]);
+            }
+            return parent[node];
+            };
+
+        auto unite = [&](int u, int v) {
+            int rootU = find(u);
+            int rootV = find(v);
+            if (rootU != rootV) {
+                parent[rootV] = rootU;
+                return true;
+            }
+            return false;
+            };
+
+        cout << "Minimum Spanning Tree edges:\n";
+        for (auto& edge : edges) {
+            if (unite(edge.src, edge.dest)) {
+                cout << "Edge from " << edge.src << " to " << edge.dest
+                    << " with capacity: " << edge.weight << " units\n";
+            }
+        }
+        cout << endl;
     }
 };
 
 int main() {
-    // Creates a vector of graph edges/weights
     vector<Edge> edges = {
-        // (x, y, w) —> edge from x to y having weight w
-        {0,1,8},{0,2,21},{1,2,6},{1,3,5},{1,4,4},{2,7,11},{2,8,8},{3,4,9}, {5,6,10}, {5,7,15}, {5,8,5}, {6,7,3}, {6,8,7}, {7,8,8}, {7,9,5}, {9,10,7}, {9,11,3}, {10,12,4}, {11,12,6}
+        {0, 1, 5}, {0, 2, 10}, {1, 2, 3}, {1, 3, 2}, {2, 4, 8},
+        {3, 4, 4}, {3, 5, 7}, {4, 6, 6}, {5, 7, 3}, {6, 8, 5},
+        {7, 8, 4}, {6, 7, 2}, {2, 5, 9}
     };
 
-  CityRoadNetwork network(edges, 9);
-
+    CityRoadNetwork network(edges, 9);
 
     int choice;
     do {
@@ -106,38 +184,38 @@ int main() {
         cin >> choice;
 
         switch (choice) {
-            case 1:
-                network.displayNetwork();
-                break;
-            case 2: {
-                int start;
-                cout << "Enter starting block: ";
-                cin >> start;
-                network.inspectBFS(start);
-                break;
-            }
-            case 3: {
-                int start;
-                cout << "Enter starting block: ";
-                cin >> start;
-                network.planInspectionDFS(start);
-                break;
-            }
-            case 4: {
-                int start;
-                cout << "Enter starting block: ";
-                cin >> start;
-                network.findShortestPaths(start);
-                break;
-            }
-            case 5:
-                network.printMST();
-                break;
-            case 0:
-                cout << "Exiting program. Goodbye!\n";
-                break;
-            default:
-                cout << "Invalid choice. Please try again.\n";
+        case 1:
+            network.displayNetwork();
+            break;
+        case 2: {
+            int start;
+            cout << "Enter starting block: ";
+            cin >> start;
+            network.inspectBFS(start);
+            break;
+        }
+        case 3: {
+            int start;
+            cout << "Enter starting block: ";
+            cin >> start;
+            network.planInspectionDFS(start);
+            break;
+        }
+        case 4: {
+            int start;
+            cout << "Enter starting block: ";
+            cin >> start;
+            network.findShortestPaths(start);
+            break;
+        }
+        case 5:
+            network.printMST();
+            break;
+        case 0:
+            cout << "Exiting program. Goodbye!\n";
+            break;
+        default:
+            cout << "Invalid choice. Please try again.\n";
         }
     } while (choice != 0);
 
