@@ -91,8 +91,55 @@ int main() {
     };
 
   CityRoadNetwork network(edges, 9);
-    
-  network.printMST();
+
+
+    int choice;
+    do {
+        cout << "City Road Network Menu:\n";
+        cout << "[1] Display road network\n";
+        cout << "[2] Check contaminant spread (BFS)\n";
+        cout << "[3] Plan inspection route (DFS)\n";
+        cout << "[4] Calculate shortest paths\n";
+        cout << "[5] Find Minimum Spanning Tree\n";
+        cout << "[0] Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                network.displayNetwork();
+                break;
+            case 2: {
+                int start;
+                cout << "Enter starting block: ";
+                cin >> start;
+                network.inspectBFS(start);
+                break;
+            }
+            case 3: {
+                int start;
+                cout << "Enter starting block: ";
+                cin >> start;
+                network.planInspectionDFS(start);
+                break;
+            }
+            case 4: {
+                int start;
+                cout << "Enter starting block: ";
+                cin >> start;
+                network.findShortestPaths(start);
+                break;
+            }
+            case 5:
+                network.printMST();
+                break;
+            case 0:
+                cout << "Exiting program. Goodbye!\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 0);
 
     return 0;
 }
