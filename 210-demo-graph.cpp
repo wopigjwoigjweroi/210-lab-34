@@ -39,9 +39,32 @@ class min {
 
         }
 
+        int find(int node) {
+        if (parent[node] != node) {
+            parent[node] = find(parent[node]); // Path compression
+        }
+        return parent[node];
+    }
 
+    bool unite(int u, int v) {
+        int rootU = find(u);
+        int rootV = find(v);
+
+        if (rootU == rootV) {
+            return false;
+        }
+        if (rank[rootU] > rank[rootV]) {
+            parent[rootV] = rootU;
+        } else if (rank[rootU] < rank[rootV]) {
+            parent[rootU] = rootV;
+        } else {
+            parent[rootV] = rootU;
+            rank[rootU]++;
+        }
+
+        return true;
+    }
 };
-
 
 class Graph {
 public:
